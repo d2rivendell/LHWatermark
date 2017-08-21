@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Plm-ja-blf">
+                                <rect key="frame" x="0.0" y="358.5" width="375" height="308.5"/>
+                                <color key="backgroundColor" red="0.48873589629999997" green="1" blue="0.98646717129999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </imageView>
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NRr-2V-8ju">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="308.5"/>
+                                <color key="backgroundColor" red="0.48873589627231651" green="1" blue="0.98646717133097428" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gDj-cF-vQY">
+                                <rect key="frame" x="163" y="316" width="31" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="还原"/>
+                                <connections>
+                                    <action selector="restore:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xpG-NX-7iq"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="NRr-2V-8ju" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="0eA-kH-Sta"/>
+                            <constraint firstItem="NRr-2V-8ju" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="4F2-qx-Oem"/>
+                            <constraint firstItem="Plm-ja-blf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="AxC-0I-d9h"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Plm-ja-blf" secondAttribute="bottom" id="Gc5-gZ-y7D"/>
+                            <constraint firstAttribute="trailing" secondItem="NRr-2V-8ju" secondAttribute="trailing" id="Qf9-9p-i3v"/>
+                            <constraint firstAttribute="trailing" secondItem="Plm-ja-blf" secondAttribute="trailing" id="U2P-RW-s73"/>
+                            <constraint firstItem="Plm-ja-blf" firstAttribute="height" secondItem="NRr-2V-8ju" secondAttribute="height" id="o8t-GF-SSI"/>
+                            <constraint firstItem="Plm-ja-blf" firstAttribute="top" secondItem="NRr-2V-8ju" secondAttribute="bottom" constant="50" id="p67-m3-LKh"/>
+                            <constraint firstItem="Plm-ja-blf" firstAttribute="width" secondItem="NRr-2V-8ju" secondAttribute="width" id="r3d-OU-9tU"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <connections>
+                        <outlet property="bottomImgView" destination="Plm-ja-blf" id="iZm-Zz-Zj0"/>
+                        <outlet property="upImgView" destination="NRr-2V-8ju" id="UUl-xe-qx5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+</document>
