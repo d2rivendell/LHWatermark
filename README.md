@@ -3,7 +3,7 @@
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/LHWatermark.svg)](http://cocoadocs.org/docsets/LHWatermark)
 [![CocoaPods](https://img.shields.io/cocoapods/l/LHWatermark.svg)](https://raw.githubusercontent.com/iTofu/LHWatermark/master/LICENSE)
-[![CocoaPods](https://img.shields.io/cocoapods/p/LHWatermark.svg)](http://cocoadocs.org/docsets/LHWatermark)
+[![CocoaPods](https://img.shields.io/cocoapods/p/LHWatermark.svg)](https://opensource.org/licenses/MIT)
 
 
 
@@ -13,7 +13,7 @@ LHWatermark可以给你的图片添加上盲水印。具体原理访问[博客](
 #### 第一步
 支持cocoaPods  在文件 Podfile 中加入以下内容：
 
-` pod 'LHWatermark', '~> 0.0.1'` 
+` pod 'LHWatermark', '~> 0.0.2'` 
 
 然后在终端中运行以下命令：
  
