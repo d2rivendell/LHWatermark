@@ -3,7 +3,7 @@
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/LHWatermark.svg)](http://cocoadocs.org/docsets/LHWatermark)
 [![CocoaPods](https://img.shields.io/cocoapods/l/LHWatermark.svg)](https://raw.githubusercontent.com/iTofu/LHWatermark/master/LICENSE)
-[![CocoaPods](https://img.shields.io/cocoapods/p/LCProgressHUD.svg)](http://cocoadocs.org/docsets/LCProgressHUD)
+[![CocoaPods](https://img.shields.io/cocoapods/p/LHWatermark.svg)](http://cocoadocs.org/docsets/LHWatermark)
 
 
 
