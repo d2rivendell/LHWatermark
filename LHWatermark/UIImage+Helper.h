@@ -58,5 +58,5 @@
 - (UIImage *)resizeImageWidth:(NSInteger)width height:(NSInteger)height;
 
 /**由text生成UIImage*/
-+ (UIImage *)imageWidthText:(NSString *)text;
++ (UIImage *)imageWidthText:(NSString *)text font:(UIFont *)font;
 @end

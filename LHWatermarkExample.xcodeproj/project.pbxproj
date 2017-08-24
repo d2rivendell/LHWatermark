@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F231D4D1F4D3DE100E318E3 /* LHConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F231D4C1F4D3DE100E318E3 /* LHConfig.m */; };
 		4FD043B61F4AEA6F0034312D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD043B51F4AEA6F0034312D /* main.m */; };
 		4FD043B91F4AEA6F0034312D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD043B81F4AEA6F0034312D /* AppDelegate.m */; };
 		4FD043C11F4AEA6F0034312D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FD043C01F4AEA6F0034312D /* Assets.xcassets */; };
@@ -19,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4F231D4B1F4D3DE100E318E3 /* LHConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHConfig.h; sourceTree = "<group>"; };
+		4F231D4C1F4D3DE100E318E3 /* LHConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHConfig.m; sourceTree = "<group>"; };
 		4FD043B11F4AEA6F0034312D /* LHWatermarkExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LHWatermarkExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FD043B51F4AEA6F0034312D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4FD043B71F4AEA6F0034312D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -98,6 +101,8 @@
 				4FD043DC1F4AED8A0034312D /* LHWatermarkProcessor.m */,
 				4FD043DD1F4AED8A0034312D /* UIImage+Helper.h */,
 				4FD043DE1F4AED8A0034312D /* UIImage+Helper.m */,
+				4F231D4B1F4D3DE100E318E3 /* LHConfig.h */,
+				4F231D4C1F4D3DE100E318E3 /* LHConfig.m */,
 			);
 			path = LHWatermark;
 			sourceTree = "<group>";
@@ -179,6 +184,7 @@
 				4FD043DF1F4AED8A0034312D /* LHWatermarkProcessor.m in Sources */,
 				4FD043E01F4AED8A0034312D /* UIImage+Helper.m in Sources */,
 				4FD043B91F4AEA6F0034312D /* AppDelegate.m in Sources */,
+				4F231D4D1F4D3DE100E318E3 /* LHConfig.m in Sources */,
 				4FD043B61F4AEA6F0034312D /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,9 +10,6 @@
 #import <UIKit/UIKit.h>
 #import <Accelerate/Accelerate.h>
 
-@interface LHWatermarkProcessor : NSObject
-
-
 typedef NS_ENUM(NSUInteger,PixielType){
     PixielR,
     PixielG,
@@ -23,6 +20,9 @@ typedef NS_ENUM(NSUInteger,FFTType){
     FFTBackwardType,
 };
 
+@class LHConfig;
+@interface LHWatermarkProcessor : NSObject
+
 @property (nonatomic, assign) DOUBLE_COMPLEX_SPLIT in_fft_r;
 @property (nonatomic, assign) DOUBLE_COMPLEX_SPLIT in_fft_g;
 @property (nonatomic, assign) DOUBLE_COMPLEX_SPLIT in_fft_b;
@@ -30,32 +30,34 @@ typedef NS_ENUM(NSUInteger,FFTType){
 @property (nonatomic, assign) DOUBLE_COMPLEX_SPLIT out_fft_r;
 @property (nonatomic, assign) DOUBLE_COMPLEX_SPLIT out_fft_g;
 @property (nonatomic, assign) DOUBLE_COMPLEX_SPLIT out_fft_b;
-
-@property (nonatomic, assign)UIImage *originalImage ;
-@property (nonatomic, assign)SInt32 rowStride ;
-@property (nonatomic, assign)SInt32 columnStride;
+/**扩展后图像的宽度*/
 @property (nonatomic, assign)NSInteger width;
+/**扩展后图像的高度*/
 @property (nonatomic, assign)NSInteger height;
-@property (nonatomic, assign)NSInteger original_width;
-@property (nonatomic, assign)NSInteger original_height;
-@property (nonatomic, assign)unsigned char *bytePtr;
 
 
-/**水印叠加参数因子*/
-@property (nonatomic, assign) double  alpha;
-/**种子*/
-@property (nonatomic, assign) unsigned seed;
 
-- (void)splitImage:(UIImage *)image;
+@property (nonatomic, strong) LHConfig *config;
 
 
 /**
- 对图片进行FFT逆变换
- @return 返回逆变换过后的图片
+  把文字转成Image, 把文字Image和频域图片进行叠加，再进行二维FFT逆变换，返回嵌入文字水印后的图片
+
+ */
+- (void)addMarkText:(NSString *)markText result:(void(^)(UIImage *watermarkImage))result;
+
+/**
+ 把水印和频域图片进行叠加，在进行二维FFT变换，返回嵌入文字水印后的图片
+ 
+ */
+- (void)addMarkImage:(UIImage *)markImage result:(void(^)(UIImage *watermarkImage))result;
+
+/**
+ 对图片进行二维FFT逆变换
  */
 -(UIImage *)ifft;
 
-- (instancetype)initWidthImage:(UIImage *)image;
+- (instancetype)initWidthImage:(UIImage *)image config:(LHConfig *)config;
 /**
  生成单通道图片
  根据PixielType来确定返回哪个通道的数据，如果direction 是正向，
@@ -71,29 +73,20 @@ typedef NS_ENUM(NSUInteger,FFTType){
 
 /**
  生成 fft变换归一化后的三通道频谱图
- @return fft频谱图
  */
 - (UIImage *)generateFFTImage;
 
 
-/**
- 添加水印 
- 根据seed把mask的像素以一定的规则打乱，分别与fft图像进行叠加
- @param mark 水印图片，宽和高都要小于原图片
- */
-- (void)addWatterMask:(UIImage* )mark;
-
-
 
 /**
- 提取水印
- @param origin 原图像的句柄类
- @param watermask 加了水印的句柄类
-  @param seed 随机分布的种子
- @return 水印图片
- */
-+ (UIImage *)restoreImageWidthProcess:(LHWatermarkProcessor *)origin watermask:(LHWatermarkProcessor *)watermask seed:(unsigned)seed;
+  提取水印
 
+ @param originImage 原始图片
+ @param watermarkImage 加了水印的图片
+ @param config 配置
+ @param result 生成含有水印文字的图片
+ */
++ (void)restoreImageWidthOriginImage:(UIImage *)originImage watermarkImage:(UIImage *)watermarkImage config:(LHConfig *)config result:(void(^)(UIImage *markImage))result;
 
 /**
  生成乱序的水印矩阵
@@ -106,5 +99,9 @@ typedef NS_ENUM(NSUInteger,FFTType){
 - (DOUBLE_COMPLEX_SPLIT )randomMatrixWidthImage:(UIImage *)image  seed:(unsigned)seed width:(NSInteger)width height:(NSInteger)height;
 
 
+/**
+ 根据矩阵数据生成图像，矩阵数据满足0～255
+ */
 - (UIImage *)generateImageWidthMatrix:(DOUBLE_COMPLEX_SPLIT )matrix width:(NSInteger)width height:(NSInteger)height;
+
 @end

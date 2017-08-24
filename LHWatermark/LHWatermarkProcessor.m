@@ -8,26 +8,57 @@
 
 #import "LHWatermarkProcessor.h"
 #import "UIImage+Helper.h"
-
+#import "LHConfig.h"
 @interface LHWatermarkProcessor()
 
+@property (nonatomic, strong) UIImage *originImage;
+
+@property (nonatomic, assign)NSInteger original_width;
+@property (nonatomic, assign)NSInteger original_height;
 @end
 
 @implementation LHWatermarkProcessor
 
-
-- (instancetype)initWidthImage:(UIImage *)image
-{
+- (instancetype)initWidthImage:(UIImage *)image{
     self = [super init];
     if (self) {
-             _alpha = 1;
-            [self splitImage:image];
-            [self fftImage];
+        _originImage = image;
     }
     return self;
 }
 
-- (void)splitImage:(UIImage *)image{
+
+- (instancetype)initWidthImage:(UIImage *)image config:(LHConfig *)config
+{
+   LHWatermarkProcessor *processor = [[LHWatermarkProcessor alloc] initWidthImage:image];
+   processor.config = config;
+   return processor;
+}
+- (void)addMarkText:(NSString *)markText result:(void(^)(UIImage *watermarkImage))result{
+   dispatch_async(dispatch_queue_create("watermark_queue", DISPATCH_QUEUE_CONCURRENT), ^{
+       [self splitImage];
+       [self fftImage];
+       [self addWatterMask:[UIImage imageWidthText:markText font:self.config.font]];
+       UIImage *image = [self ifft];
+       dispatch_async(dispatch_get_main_queue(), ^{
+          result(image);
+       });
+   });
+}
+- (void)addMarkImage:(UIImage *)markImage result:(void(^)(UIImage *watermarkImage))result{
+ dispatch_async(dispatch_queue_create("watermark_queue", DISPATCH_QUEUE_CONCURRENT), ^{
+     [self splitImage];
+     [self fftImage];
+     [self addWatterMask:markImage];
+     UIImage *image = [self ifft];
+     dispatch_async(dispatch_get_main_queue(), ^{
+         result(image);
+     });
+ });
+}
+
+- (void)splitImage{
+    UIImage *image = _originImage;
     _original_width = image.size.width;
     _original_height = image.size.height;
        image = [image getLog2Image];
@@ -82,31 +113,31 @@
     UInt32 log2nr = log2(_height);
 
     NSInteger numElements = _width * _height;
-    _rowStride = 1;
-    _columnStride = 0;
+    SInt32 rowStride = 1;
+    SInt32 columnStride = 0;
     FFTSetupD setup = vDSP_create_fftsetupD(MAX(log2nr, log2nc), FFT_RADIX2);
     
     _out_fft_r.realp = ( double* ) malloc ( numElements * sizeof ( double ) );
     _out_fft_r.imagp = ( double* ) malloc ( numElements * sizeof ( double ) );
     
-    vDSP_fft2d_zopD( setup, &_in_fft_r, _rowStride, _columnStride, &_out_fft_r, _rowStride, _columnStride, log2nc, log2nr, FFT_FORWARD );
-    NSLog(@"After fft");
+    vDSP_fft2d_zopD( setup, &_in_fft_r, rowStride, columnStride, &_out_fft_r, rowStride, columnStride, log2nc, log2nr, FFT_FORWARD );
+
     
        
     _out_fft_g.realp = ( double* ) malloc ( numElements * sizeof ( double ) );
     _out_fft_g.imagp = ( double* ) malloc ( numElements * sizeof ( double ) );
     
     
-    vDSP_fft2d_zopD( setup, &_in_fft_g, _rowStride, _columnStride, &_out_fft_g, _rowStride, _columnStride, log2nc, log2nr, FFT_FORWARD );
-    NSLog(@"After fft");
+    vDSP_fft2d_zopD( setup, &_in_fft_g, rowStride, columnStride, &_out_fft_g, rowStride, columnStride, log2nc, log2nr, FFT_FORWARD );
+
     
     
     _out_fft_b.realp = ( double* ) malloc ( numElements * sizeof ( double ) );
     _out_fft_b.imagp = ( double* ) malloc ( numElements * sizeof ( double ) );
     
     
-    vDSP_fft2d_zopD( setup, &_in_fft_b, _rowStride, _columnStride, &_out_fft_b, _rowStride, _columnStride, log2nc, log2nr, FFT_FORWARD );
-    NSLog(@"After fft");
+    vDSP_fft2d_zopD( setup, &_in_fft_b, rowStride, columnStride, &_out_fft_b, rowStride, columnStride, log2nc, log2nr, FFT_FORWARD );
+
     
      free(setup);
 
@@ -207,8 +238,10 @@
     UInt32 log2nr = log2(_height);
     
     NSInteger numElements = _width * _height;
-    
     double SCALE = 1.0/numElements;
+    SInt32 rowStride = 1;
+    SInt32 columnStride = 0;
+    
     DOUBLE_COMPLEX_SPLIT out_ifft_r;
     out_ifft_r.realp = ( double * ) malloc ( numElements * sizeof ( double ) );
     out_ifft_r.imagp = ( double* ) malloc ( numElements * sizeof ( double ) );
@@ -216,10 +249,8 @@
     FFTSetupD setup = vDSP_create_fftsetupD(MAX(log2nr, log2nc), FFT_RADIX2);
     
     
-    vDSP_fft2d_zopD(setup, &_out_fft_r, _rowStride, _columnStride, &out_ifft_r, _rowStride, _columnStride, log2nc, log2nr, FFT_INVERSE);
-    NSLog(@"after ifft");
-    
-    
+    vDSP_fft2d_zopD(setup, &_out_fft_r, rowStride, columnStride, &out_ifft_r, rowStride, columnStride, log2nc, log2nr, FFT_INVERSE);
+   
     vDSP_vsmulD( out_ifft_r.realp, 1, &SCALE, out_ifft_r.realp, 1, numElements );
     vDSP_vsmulD( out_ifft_r.imagp, 1, &SCALE, out_ifft_r.imagp, 1, numElements );
     
@@ -229,8 +260,8 @@
     out_ifft_g.imagp = ( double* ) malloc ( numElements * sizeof ( double ) );
     
 
-    vDSP_fft2d_zopD(setup, &_out_fft_g, _rowStride, _columnStride, &out_ifft_g, _rowStride, _columnStride, log2nc, log2nr, FFT_INVERSE);
-    NSLog(@"after ifft");
+    vDSP_fft2d_zopD(setup, &_out_fft_g, rowStride, columnStride, &out_ifft_g, rowStride, columnStride, log2nc, log2nr, FFT_INVERSE);
+  
     
  
     vDSP_vsmulD( out_ifft_g.realp, 1, &SCALE, out_ifft_g.realp, 1, numElements );
@@ -242,8 +273,8 @@
     out_ifft_b.imagp = ( double* ) malloc ( numElements * sizeof ( double ) );
     
     
-    vDSP_fft2d_zopD(setup, &_out_fft_b, _rowStride, _columnStride, &out_ifft_b, _rowStride, _columnStride, log2nc, log2nr, FFT_INVERSE);
-    NSLog(@"after ifft");
+    vDSP_fft2d_zopD(setup, &_out_fft_b, rowStride, columnStride, &out_ifft_b, rowStride, columnStride, log2nc, log2nr, FFT_INVERSE);
+  
     
     vDSP_vsmulD( out_ifft_b.realp, 1, &SCALE, out_ifft_b.realp, 1, numElements );
     vDSP_vsmulD( out_ifft_b.imagp, 1, &SCALE, out_ifft_b.imagp, 1, numElements );
@@ -264,11 +295,8 @@
     return [wm_image resizeImageWidth:_original_width height:_original_height ];;
 }
 
-
-
-
 - (void)addWatterMask:(UIImage* )mark{
-    DOUBLE_COMPLEX_SPLIT channel = [self randomMatrixWidthImage:mark seed:_seed width:_width height:_height];
+    DOUBLE_COMPLEX_SPLIT channel = [self randomMatrixWidthImage:mark seed:self.config.seed width:_width height:_height];
     [self addDigitalWatterMask:channel];
 
 }
@@ -278,13 +306,13 @@
         for (NSInteger i = 0; i < _width; i++) {
             NSInteger index = j * _width + i;
             
-            _out_fft_r.realp[index] += channel.realp[index] * _alpha;
-            _out_fft_g.realp[index] += channel.realp[index] * _alpha;
-            _out_fft_b.realp[index] += channel.realp[index] * _alpha;
+            _out_fft_r.realp[index] += channel.realp[index] * self.config.alpha;
+            _out_fft_g.realp[index] += channel.realp[index] * self.config.alpha;
+            _out_fft_b.realp[index] += channel.realp[index] * self.config.alpha;
             
-            _out_fft_r.imagp[index] += channel.realp[index] * _alpha;
-            _out_fft_g.imagp[index] += channel.realp[index] * _alpha;
-            _out_fft_b.imagp[index] += channel.realp[index] * _alpha;
+            _out_fft_r.imagp[index] += channel.realp[index] * self.config.alpha;
+            _out_fft_g.imagp[index] += channel.realp[index] * self.config.alpha;
+            _out_fft_b.imagp[index] += channel.realp[index] * self.config.alpha;
         }
     }
     free(channel.realp);
@@ -294,47 +322,54 @@
 + (int)mySqrt:(double)real1 imagp1:(double)imagp1  real2:(double)real2 imagp2:(double)imagp2  alpha:(double)alpha{
     return sqrt(pow((real1 - real2)/alpha, 2) + pow((imagp1 - imagp2)/alpha, 2));
 }
-+ (UIImage *)restoreImageWidthProcess:(LHWatermarkProcessor *)origin watermask:(LHWatermarkProcessor *)watermask seed:(unsigned)seed{
-    
-    NSInteger w  =  watermask.width;
-    NSInteger h =   watermask.height;
-    
-    UInt32 *imageBuffer =(UInt32 *) malloc(sizeof(UInt32) * h * w);
-    
-    double *delta =(double *) malloc(sizeof(double) * h * w);
-    for (NSInteger j = 0; j < h; j++) {
-        for (NSInteger i = 0; i < w; i++) {
-            NSInteger index = j * w + i;
-            
-           int r =  [LHWatermarkProcessor mySqrt:watermask.out_fft_r.realp[index] imagp1:watermask.out_fft_r.imagp[index] real2:origin.out_fft_r.realp[index] imagp2:origin.out_fft_r.imagp[index] alpha:origin.alpha];
-           int g =  [LHWatermarkProcessor mySqrt:watermask.out_fft_g.realp[index] imagp1:watermask.out_fft_g.imagp[index] real2:origin.out_fft_g.realp[index] imagp2:origin.out_fft_g.imagp[index] alpha:origin.alpha];
-           int b =  [LHWatermarkProcessor mySqrt:watermask.out_fft_b.realp[index] imagp1:watermask.out_fft_b.imagp[index] real2:origin.out_fft_b.realp[index] imagp2:origin.out_fft_b.imagp[index] alpha:origin.alpha];
-            
-            int rgb = (r + g + b)/3.0;
-            delta[index] = rgb;
-            
-        }
-    }
-    double max = 0;
-    NSInteger i = 0;
-    for ( i = 0 ; i < h * w; i++) {
-        double rgb = delta[i];
-        if(rgb > max){
-            max = rgb;
-        }
-    }
-    max = log(9e-3 * max + 1.0);
-    for ( i = 0; i < h * w; i++) {
-        double rgb = delta[i];
-        rgb = log(9e-3 * rgb + 1.0);
-        double color = (rgb/max) * 255.0;
-        imageBuffer[i] = RGBAMake((int)color,(int)color,(int)color,255);
-    }
-    free(delta);
-    return [UIImage restoreImageWidth:seed width:w height:h buff:imageBuffer];
-    
++ (void)restoreImageWidthOriginImage:(UIImage *)originImage watermarkImage:(UIImage *)watermarkImage config:(LHConfig *)config  result:(void(^)(UIImage *markImage))result{
+     dispatch_async(dispatch_queue_create("watermark_queue", DISPATCH_QUEUE_CONCURRENT), ^{
+         LHWatermarkProcessor *  watermarkProcess = [[LHWatermarkProcessor alloc] initWidthImage:watermarkImage];
+         [watermarkProcess splitImage];
+         [watermarkProcess fftImage];
+         LHWatermarkProcessor *  originalProcess = [[LHWatermarkProcessor alloc] initWidthImage:originImage];
+         [originalProcess splitImage];
+         [originalProcess fftImage];
+         
+         NSInteger w  =  watermarkProcess.width;
+         NSInteger h =   watermarkProcess.height;
+         UInt32 *imageBuffer =(UInt32 *) malloc(sizeof(UInt32) * h * w);
+         
+         double *delta =(double *) malloc(sizeof(double) * h * w);
+         for (NSInteger j = 0; j < h; j++) {
+             for (NSInteger i = 0; i < w; i++) {
+                 NSInteger index = j * w + i;
+                 
+                 int r =  [LHWatermarkProcessor mySqrt:watermarkProcess.out_fft_r.realp[index] imagp1:watermarkProcess.out_fft_r.imagp[index] real2:originalProcess.out_fft_r.realp[index] imagp2:originalProcess.out_fft_r.imagp[index] alpha:config.alpha];
+                 int g =  [LHWatermarkProcessor mySqrt:watermarkProcess.out_fft_g.realp[index] imagp1:watermarkProcess.out_fft_g.imagp[index] real2:originalProcess.out_fft_g.realp[index] imagp2:originalProcess.out_fft_g.imagp[index] alpha:config.alpha];
+                 int b =  [LHWatermarkProcessor mySqrt:watermarkProcess.out_fft_b.realp[index] imagp1:watermarkProcess.out_fft_b.imagp[index] real2:originalProcess.out_fft_b.realp[index] imagp2:originalProcess.out_fft_b.imagp[index] alpha:config.alpha];
+                 
+                 int rgb = (r + g + b)/3.0;
+                 delta[index] = rgb;
+                 
+             }
+         }
+         double max = 0;
+         NSInteger i = 0;
+         for ( i = 0 ; i < h * w; i++) {
+             double rgb = delta[i];
+             if(rgb > max){
+                 max = rgb;
+             }
+         }
+         max = log(9e-3 * max + 1.0);
+         for ( i = 0; i < h * w; i++) {
+             double rgb = delta[i];
+             rgb = log(9e-3 * rgb + 1.0);
+             double color = (rgb/max) * 255.0;
+             imageBuffer[i] = RGBAMake((int)color,(int)color,(int)color,255);
+         }
+         free(delta);
+         dispatch_async(dispatch_get_main_queue(), ^{
+               result([UIImage restoreImageWidth:config.seed width:w height:h buff:imageBuffer]);
+         });
+     });
 }
-
 
 
 - (DOUBLE_COMPLEX_SPLIT )randomMatrixWidthImage:(UIImage *)image  seed:(unsigned)seed width:(NSInteger)width height:(NSInteger)height{

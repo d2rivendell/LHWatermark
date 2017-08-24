@@ -10,11 +10,11 @@
 #import "UIImage+Helper.h"
 #import "LHWatermarkProcessor.h"
 #import "NextViewController.h"
+#import "LHConfig.h"
 #define ImageName @"yourName"
-#define Alpha 3
-#define Seed 1024
+
 @interface ViewController ()
-@property (weak, nonatomic) IBOutlet UIImageView *upImgView;
+@property (weak, nonatomic) IBOutlet UIImageView *topImgView;
 @property (weak, nonatomic) IBOutlet UIImageView *bottomImgView;
 @property (nonatomic, copy) NSString *imagePath;
 @end
@@ -24,41 +24,37 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.upImgView addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presenting:)]];
+    [self.topImgView addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presenting:)]];
     [self.bottomImgView addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presenting:)]];
-    
-    
     UIImage *image = [UIImage imageNamed:ImageName];
-    LHWatermarkProcessor *  _process = [[LHWatermarkProcessor alloc] initWidthImage:image];
-  self.upImgView.image =   [_process generateImageWidthPixielType:PixielR direction:FFTBackwardType];
-    _process.alpha= Alpha;
-    _process.seed = Seed;
-    [_process addWatterMask:[UIImage imageWidthText:@"你的名字"]];
-    UIImage *wm_image  = [_process ifft];
     
-    self.upImgView.image = wm_image;
-     NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-     _imagePath = [documentPath stringByAppendingPathComponent:[NSString stringWithFormat:@"code_%@.png",ImageName]];
-     [UIImagePNGRepresentation(wm_image) writeToFile:_imagePath  atomically:YES];
-            NSLog(@"%@",_imagePath);
+    
+    LHWatermarkProcessor *  processor = [[LHWatermarkProcessor alloc] initWidthImage:image config:[LHConfig defaultConfig]];
+    
+    __weak typeof(self) weakSelf = self;
+    [processor addMarkText:@"你的名字"  result:^(UIImage *watermarkImage) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+         strongSelf.topImgView.image = watermarkImage;
+        NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        _imagePath = [documentPath stringByAppendingPathComponent:[NSString stringWithFormat:@"code_%@.png",ImageName]];
+        [UIImagePNGRepresentation(watermarkImage) writeToFile:_imagePath  atomically:YES];
+        NSLog(@"%@",_imagePath);
+    }];
+
 
 }
-- (BOOL)prefersStatusBarHidden{
-    return YES;
-}
+
 
 - (IBAction)restore:(id)sender {
      UIImage *image = [UIImage imageNamed:ImageName];
-    LHWatermarkProcessor *  watermaskProcess = [[LHWatermarkProcessor alloc] initWidthImage:[UIImage imageWithContentsOfFile:_imagePath]];
-    watermaskProcess.alpha= Alpha;
-
-    
-    LHWatermarkProcessor *  originalProcess = [[LHWatermarkProcessor alloc] initWidthImage:image];
-    originalProcess.alpha= Alpha;
-
-    
-    UIImage *restoreMask  = [LHWatermarkProcessor restoreImageWidthProcess:originalProcess watermask:watermaskProcess seed:Seed];
-    self.bottomImgView.image = [restoreMask resizeImageWidth:image.size.width height:image.size.height];
+     __weak typeof(self) weakSelf = self;
+    // 传入元图像和加了水印的图像 异步线程
+    [LHWatermarkProcessor restoreImageWidthOriginImage:image watermarkImage:[UIImage imageWithContentsOfFile:_imagePath] config:[LHConfig defaultConfig] result:^(UIImage *markImage) {
+         __strong typeof(weakSelf) strongSelf = weakSelf;
+        // block中返回水印的图片 主线程
+         strongSelf.bottomImgView.image = markImage;
+    }];
+   
 }
 
 - (void)presenting:(UITapGestureRecognizer *)tap{
@@ -72,6 +68,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+- (BOOL)prefersStatusBarHidden{
+    return YES;
+}
 
 @end

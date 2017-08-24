@@ -63,7 +63,6 @@
                     imageBuffer[index] = color;
                     currentPixel++;
                 }
-                
             }
         }
     }
@@ -161,14 +160,16 @@
     return imagePixels;
 }
 
-+ (UIImage *)imageWidthText:(NSString *)text{
-    UILabel *lb = [[UILabel alloc] initWithFrame:CGRectMake(0, 200, 300, 60)];
-    lb.text = text;
++ (UIImage *)imageWidthText:(NSString *)text font:(UIFont *)font{
+    UILabel *lb = [[UILabel alloc] init];
     lb.textColor = [UIColor blackColor];
+    lb.backgroundColor = [UIColor whiteColor];
     lb.textAlignment = NSTextAlignmentCenter;
     lb.backgroundColor = [UIColor whiteColor];
-    lb.font = [UIFont systemFontOfSize:40];
     lb.adjustsFontSizeToFitWidth = YES;
+    lb.text = text;
+    lb.font = font;
+    lb.bounds = [text boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
     return  [UIImage imageWithView:lb];
 }
 + (UIImage*) imageWithView:(UIView*) view;

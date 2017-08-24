@@ -22,40 +22,56 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Plm-ja-blf">
-                                <rect key="frame" x="0.0" y="358.5" width="375" height="308.5"/>
+                                <rect key="frame" x="0.0" y="378.5" width="375" height="288.5"/>
                                 <color key="backgroundColor" red="0.48873589629999997" green="1" blue="0.98646717129999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                             <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NRr-2V-8ju">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="308.5"/>
+                                <rect key="frame" x="0.0" y="40" width="375" height="288.5"/>
                                 <color key="backgroundColor" red="0.48873589627231651" green="1" blue="0.98646717133097428" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gDj-cF-vQY">
-                                <rect key="frame" x="163" y="316" width="31" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="还原"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gDj-cF-vQY">
+                                <rect key="frame" x="147.5" y="336" width="80" height="30"/>
+                                <color key="backgroundColor" red="0.21082739740000001" green="0.60527886279999998" blue="0.31325795290000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="MNE-61-HLl"/>
+                                    <constraint firstAttribute="height" constant="30" id="Sne-g3-CFx"/>
+                                </constraints>
+                                <state key="normal" title="提取水印">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
                                 <connections>
                                     <action selector="restore:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xpG-NX-7iq"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="水印图片:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="91P-qk-brI">
+                                <rect key="frame" x="20" y="10" width="74" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="NRr-2V-8ju" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="0eA-kH-Sta"/>
-                            <constraint firstItem="NRr-2V-8ju" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="4F2-qx-Oem"/>
+                            <constraint firstItem="gDj-cF-vQY" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="43F-Ck-MOc"/>
+                            <constraint firstItem="NRr-2V-8ju" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="40" id="4F2-qx-Oem"/>
                             <constraint firstItem="Plm-ja-blf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="AxC-0I-d9h"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Plm-ja-blf" secondAttribute="bottom" id="Gc5-gZ-y7D"/>
                             <constraint firstAttribute="trailing" secondItem="NRr-2V-8ju" secondAttribute="trailing" id="Qf9-9p-i3v"/>
                             <constraint firstAttribute="trailing" secondItem="Plm-ja-blf" secondAttribute="trailing" id="U2P-RW-s73"/>
+                            <constraint firstItem="gDj-cF-vQY" firstAttribute="top" secondItem="NRr-2V-8ju" secondAttribute="bottom" constant="7.5" id="ZqR-9I-TuD"/>
                             <constraint firstItem="Plm-ja-blf" firstAttribute="height" secondItem="NRr-2V-8ju" secondAttribute="height" id="o8t-GF-SSI"/>
                             <constraint firstItem="Plm-ja-blf" firstAttribute="top" secondItem="NRr-2V-8ju" secondAttribute="bottom" constant="50" id="p67-m3-LKh"/>
                             <constraint firstItem="Plm-ja-blf" firstAttribute="width" secondItem="NRr-2V-8ju" secondAttribute="width" id="r3d-OU-9tU"/>
+                            <constraint firstItem="91P-qk-brI" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="10" id="wMS-7l-rRT"/>
+                            <constraint firstItem="91P-qk-brI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="yAI-vo-uPf"/>
                         </constraints>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="bottomImgView" destination="Plm-ja-blf" id="iZm-Zz-Zj0"/>
-                        <outlet property="upImgView" destination="NRr-2V-8ju" id="UUl-xe-qx5"/>
+                        <outlet property="topImgView" destination="NRr-2V-8ju" id="VKq-JP-nF0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
