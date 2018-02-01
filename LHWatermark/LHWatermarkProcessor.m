@@ -10,7 +10,9 @@
 #import "UIImage+Helper.h"
 #import "LHConfig.h"
 @interface LHWatermarkProcessor()
-
+{
+    dispatch_queue_t _watermark_queue;
+}
 @property (nonatomic, strong) UIImage *originImage;
 
 @property (nonatomic, assign)NSInteger original_width;
@@ -19,23 +21,23 @@
 
 @implementation LHWatermarkProcessor
 
-- (instancetype)initWidthImage:(UIImage *)image{
+- (instancetype)initWithImage:(UIImage *)image{
     self = [super init];
     if (self) {
         _originImage = image;
+        _watermark_queue = dispatch_queue_create("watermark_queue", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
 
 
-- (instancetype)initWidthImage:(UIImage *)image config:(LHConfig *)config
-{
-   LHWatermarkProcessor *processor = [[LHWatermarkProcessor alloc] initWidthImage:image];
+- (instancetype)initWithImage:(UIImage *)image config:(LHConfig *)config{
+   LHWatermarkProcessor *processor = [[LHWatermarkProcessor alloc] initWithImage:image];
    processor.config = config;
    return processor;
 }
 - (void)addMarkText:(NSString *)markText result:(void(^)(UIImage *watermarkImage))result{
-   dispatch_async(dispatch_queue_create("watermark_queue", DISPATCH_QUEUE_CONCURRENT), ^{
+   dispatch_async(_watermark_queue, ^{
        [self splitImage];
        [self fftImage];
        [self addWatterMask:[UIImage imageWidthText:markText font:self.config.font]];
@@ -46,7 +48,7 @@
    });
 }
 - (void)addMarkImage:(UIImage *)markImage result:(void(^)(UIImage *watermarkImage))result{
- dispatch_async(dispatch_queue_create("watermark_queue", DISPATCH_QUEUE_CONCURRENT), ^{
+ dispatch_async(_watermark_queue, ^{
      [self splitImage];
      [self fftImage];
      [self addWatterMask:markImage];
@@ -144,7 +146,7 @@
     
 }
 
-- (UIImage *)generateImageWidthPixielType:(PixielType )pixielType direction:(FFTType)direction{
+- (UIImage *)generateImageWithPixielType:(PixielType )pixielType direction:(FFTType)direction{
       DOUBLE_COMPLEX_SPLIT channel;
       NSInteger N = _width * _height;
      UInt32 *imageBuffer =(UInt32 *) malloc(sizeof(UInt32) * _height * _width);
@@ -186,7 +188,7 @@
      return [UIImage imageFromRGB:imageBuffer width:_width height:_height];
 }
 
-- (UIImage *)generateImageWidthMatrix:(DOUBLE_COMPLEX_SPLIT )matrix width:(NSInteger)width height:(NSInteger)height{
+- (UIImage *)generateImageWithMatrix:(DOUBLE_COMPLEX_SPLIT )matrix width:(NSInteger)width height:(NSInteger)height{
      NSInteger N = width * height;
     UInt32 *imageBuffer =(UInt32 *) malloc(sizeof(UInt32) * width * height);
     for (NSInteger i = 0; i < N; i++) {
@@ -292,11 +294,11 @@
     free(setup);
     UIImage *wm_image =  [UIImage imageFromRGB:imageBuffer width:_width height:_height];
     
-    return [wm_image resizeImageWidth:_original_width height:_original_height ];;
+    return [wm_image resizeImageWith:_original_width height:_original_height ];;
 }
 
 - (void)addWatterMask:(UIImage* )mark{
-    DOUBLE_COMPLEX_SPLIT channel = [self randomMatrixWidthImage:mark seed:self.config.seed width:_width height:_height];
+    DOUBLE_COMPLEX_SPLIT channel = [self randomMatrixWithImage:mark seed:self.config.seed width:_width height:_height];
     [self addDigitalWatterMask:channel];
 
 }
@@ -322,12 +324,12 @@
 + (int)mySqrt:(double)real1 imagp1:(double)imagp1  real2:(double)real2 imagp2:(double)imagp2  alpha:(double)alpha{
     return sqrt(pow((real1 - real2)/alpha, 2) + pow((imagp1 - imagp2)/alpha, 2));
 }
-+ (void)restoreImageWidthOriginImage:(UIImage *)originImage watermarkImage:(UIImage *)watermarkImage config:(LHConfig *)config  result:(void(^)(UIImage *markImage))result{
++ (void)restoreImageWithOriginImage:(UIImage *)originImage watermarkImage:(UIImage *)watermarkImage config:(LHConfig *)config  result:(void(^)(UIImage *markImage))result{
      dispatch_async(dispatch_queue_create("watermark_queue", DISPATCH_QUEUE_CONCURRENT), ^{
-         LHWatermarkProcessor *  watermarkProcess = [[LHWatermarkProcessor alloc] initWidthImage:watermarkImage];
+         LHWatermarkProcessor *  watermarkProcess = [[LHWatermarkProcessor alloc] initWithImage:watermarkImage];
          [watermarkProcess splitImage];
          [watermarkProcess fftImage];
-         LHWatermarkProcessor *  originalProcess = [[LHWatermarkProcessor alloc] initWidthImage:originImage];
+         LHWatermarkProcessor *  originalProcess = [[LHWatermarkProcessor alloc] initWithImage:originImage];
          [originalProcess splitImage];
          [originalProcess fftImage];
          
@@ -366,13 +368,13 @@
          }
          free(delta);
          dispatch_async(dispatch_get_main_queue(), ^{
-               result([UIImage restoreImageWidth:config.seed width:w height:h buff:imageBuffer]);
+               result([UIImage restoreImageWith:config.seed width:w height:h buff:imageBuffer]);
          });
      });
 }
 
 
-- (DOUBLE_COMPLEX_SPLIT )randomMatrixWidthImage:(UIImage *)image  seed:(unsigned)seed width:(NSInteger)width height:(NSInteger)height{
+- (DOUBLE_COMPLEX_SPLIT )randomMatrixWithImage:(UIImage *)image  seed:(unsigned)seed width:(NSInteger)width height:(NSInteger)height{
     NSInteger N = width * height;
     NSAssert(width >= image.size.width, @"wattermask's width can not be bigger than origins'");
     NSAssert(height/2 >= image.size.height, @"wattermask's height can not be bigger than  half length of origin's ");

@@ -9,7 +9,7 @@
 #import "LHConfig.h"
 
 @implementation LHConfig
-- (instancetype)initWidthAlpha:(NSUInteger)alpha seed:(unsigned)seed font:(UIFont *)font{
+- (instancetype)initWithAlpha:(NSUInteger)alpha seed:(unsigned)seed font:(UIFont *)font{
     self = [super init];
     if (self) {
         _alpha = alpha;
@@ -19,6 +19,6 @@
     return self;
 }
 + (instancetype)defaultConfig{
-    return [[LHConfig alloc] initWidthAlpha:3 seed:1024 font:[UIFont systemFontOfSize:40]];
+    return [[LHConfig alloc] initWithAlpha:3 seed:1024 font:[UIFont systemFontOfSize:40]];
 }
 @end

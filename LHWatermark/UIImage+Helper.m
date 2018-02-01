@@ -16,7 +16,7 @@
     CGFloat nImageW = [self normalize:width];
     CGFloat nImageH = [self normalize:height];
     if(width != nImageW || height != nImageH){
-       return  [self resizeImageWidth:nImageW height:nImageH];
+       return  [self resizeImageWith:nImageW height:nImageH];
     }
     return self;
 }
@@ -27,8 +27,7 @@
 
 
 
-- (UIImage *)resizeImageWidth:(NSInteger)width height:(NSInteger)height
-{
+- (UIImage *)resizeImageWith:(NSInteger)width height:(NSInteger)height{
     NSInteger originW = self.size.width;
     NSInteger originH = self.size.height;
     UInt32 * imagePixels = [self UInt32ImageBuff];
@@ -71,7 +70,7 @@
 }
 
 
-+ (UIImage *)restoreImageWidth:(unsigned)seed width:(NSInteger)width height:(NSInteger)height buff:(UInt32 *)buff{
++ (UIImage *)restoreImageWith:(unsigned)seed width:(NSInteger)width height:(NSInteger)height buff:(UInt32 *)buff{
     NSInteger N = width * height;
     //random
     srand(seed);
@@ -114,8 +113,7 @@
     return [UIImage imageFromRGB:imageBuffer width:width height:height];
 }
 
-+ (UIImage*)imageFromRGB:(void*)rawData width:(NSUInteger)w height:(NSUInteger)h
-{
++ (UIImage *)imageFromRGB:(void*)rawData width:(NSUInteger)w height:(NSUInteger)h{
     const size_t bufferLength = w * h * sizeof(UInt32);
     NSData *data = [NSData dataWithBytes:rawData length:bufferLength];
     
@@ -172,8 +170,7 @@
     lb.bounds = [text boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
     return  [UIImage imageWithView:lb];
 }
-+ (UIImage*) imageWithView:(UIView*) view;
-{
++ (UIImage *)imageWithView:(UIView*)view{
     UIGraphicsBeginImageContext(view.bounds.size);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     [view.layer renderInContext:ctx];

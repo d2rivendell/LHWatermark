@@ -39,8 +39,7 @@
     }]];
     [self presentViewController:alert animated:YES completion:nil];
 }
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
-{
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
         if (error) {
             NSLog(@"保存失败");
         }else{

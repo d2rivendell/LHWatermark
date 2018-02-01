@@ -1,10 +1,9 @@
-
 Pod::Spec.new do |s|
 s.name         = "LHWatermark"
-s.version      = "0.0.1"
+s.version      = "0.0.3"
 s.summary      = "Add watermark on your Image."
 s.homepage     = "https://github.com/LeonHwa/LHWatermark"
-s.license      = "MIT"
+s.license      = { :type => 'MIT', :file => 'LICENSE.md' }
 s.author       = { "LeonHwa" => "hwestseacoast@163.com" }
 s.platform     = :ios, "7.0"
 s.source       = { :git => "https://github.com/LeonHwa/LHWatermark.git", :tag => s.version }

@@ -47,7 +47,7 @@ typedef NS_ENUM(NSUInteger,FFTType){
 - (void)addMarkText:(NSString *)markText result:(void(^)(UIImage *watermarkImage))result;
 
 /**
- 把水印和频域图片进行叠加，在进行二维FFT变换，返回嵌入文字水印后的图片
+ 把水印和频域图片进行叠加，再进行二维FFT变换，返回嵌入文字水印后的图片
  
  */
 - (void)addMarkImage:(UIImage *)markImage result:(void(^)(UIImage *watermarkImage))result;
@@ -57,7 +57,7 @@ typedef NS_ENUM(NSUInteger,FFTType){
  */
 -(UIImage *)ifft;
 
-- (instancetype)initWidthImage:(UIImage *)image config:(LHConfig *)config;
+- (instancetype)initWithImage:(UIImage *)image config:(LHConfig *)config;
 /**
  生成单通道图片
  根据PixielType来确定返回哪个通道的数据，如果direction 是正向，
@@ -66,7 +66,7 @@ typedef NS_ENUM(NSUInteger,FFTType){
  @param direction 正反变换
  @return 单通道频谱图
  */
-- (UIImage *)generateImageWidthPixielType:(PixielType )pixielType direction:(FFTType)direction;
+- (UIImage *)generateImageWithPixielType:(PixielType )pixielType direction:(FFTType)direction;
 
 
 
@@ -86,7 +86,7 @@ typedef NS_ENUM(NSUInteger,FFTType){
  @param config 配置
  @param result 生成含有水印文字的图片
  */
-+ (void)restoreImageWidthOriginImage:(UIImage *)originImage watermarkImage:(UIImage *)watermarkImage config:(LHConfig *)config result:(void(^)(UIImage *markImage))result;
++ (void)restoreImageWithOriginImage:(UIImage *)originImage watermarkImage:(UIImage *)watermarkImage config:(LHConfig *)config result:(void(^)(UIImage *markImage))result;
 
 /**
  生成乱序的水印矩阵
@@ -96,12 +96,12 @@ typedef NS_ENUM(NSUInteger,FFTType){
  @param height 生成目标水印高度
  @return 二维乱序水印矩阵
  */
-- (DOUBLE_COMPLEX_SPLIT )randomMatrixWidthImage:(UIImage *)image  seed:(unsigned)seed width:(NSInteger)width height:(NSInteger)height;
+- (DOUBLE_COMPLEX_SPLIT )randomMatrixWithImage:(UIImage *)image  seed:(unsigned)seed width:(NSInteger)width height:(NSInteger)height;
 
 
 /**
  根据矩阵数据生成图像，矩阵数据满足0～255
  */
-- (UIImage *)generateImageWidthMatrix:(DOUBLE_COMPLEX_SPLIT )matrix width:(NSInteger)width height:(NSInteger)height;
+- (UIImage *)generateImageWithMatrix:(DOUBLE_COMPLEX_SPLIT )matrix width:(NSInteger)width height:(NSInteger)height;
 
 @end

@@ -23,7 +23,7 @@
 @property (nonatomic, assign) UIFont  *font;
 
 
-- (instancetype)initWidthAlpha:(NSUInteger)alpha seed:(unsigned)seed font:(UIFont *)font;
+- (instancetype)initWithAlpha:(NSUInteger)alpha seed:(unsigned)seed font:(UIFont *)font;
 
 
 + (instancetype)defaultConfig;

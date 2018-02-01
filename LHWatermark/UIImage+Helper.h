@@ -41,7 +41,7 @@
  @param buff 数字水印内存块地址
  @return 原水印图像
  */
-+ (UIImage *)restoreImageWidth:(unsigned)seed width:(NSInteger)width height:(NSInteger)height buff:(UInt32 *)buff;
++ (UIImage *)restoreImageWith:(unsigned)seed width:(NSInteger)width height:(NSInteger)height buff:(UInt32 *)buff;
 
 /**
  返回 UInt32 *类型的图片内存地址
@@ -55,7 +55,7 @@
  @param height 目标图片高度
  @return 填充图片或者切割图片
  */
-- (UIImage *)resizeImageWidth:(NSInteger)width height:(NSInteger)height;
+- (UIImage *)resizeImageWith:(NSInteger)width height:(NSInteger)height;
 
 /**由text生成UIImage*/
 + (UIImage *)imageWidthText:(NSString *)text font:(UIFont *)font;
