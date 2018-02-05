@@ -13,7 +13,7 @@ LHWatermark可以给你的图片添加上盲水印。具体原理访问[博客](
 #### 第一步
 支持cocoaPods  在文件 Podfile 中加入以下内容：
 
-` pod 'LHWatermark', '~> 0.0.2'` 
+` pod 'LHWatermark', '~> 0.0.3'` 
 
 然后在终端中运行以下命令：
  
@@ -24,7 +24,7 @@ LHWatermark可以给你的图片添加上盲水印。具体原理访问[博客](
 
 ```
   //初始化
-    LHWatermarkProcessor *  processor = [[LHWatermarkProcessor alloc] initWidthImage:image config:[LHConfig defaultConfig]];
+    LHWatermarkProcessor *  processor = [[LHWatermarkProcessor alloc] initWithImage:image config:[LHConfig defaultConfig]];
     __weak typeof(self) weakSelf = self;
     //把文字水印@"你的名字"添加到image中。 异步线程
     [processor addMarkText:@"你的名字"  result:^(UIImage *watermarkImage) {
@@ -39,7 +39,7 @@ LHWatermark可以给你的图片添加上盲水印。具体原理访问[博客](
    UIImage *image = [UIImage imageNamed:ImageName];
      __weak typeof(self) weakSelf = self;
     // 分别传入原图像、加了水印的图像 。异步线程
-    [LHWatermarkProcessor restoreImageWidthOriginImage:image watermarkImage:[UIImage imageWithContentsOfFile:_imagePath] config:[LHConfig defaultConfig] result:^(UIImage *markImage) {
+    [LHWatermarkProcessor restoreImageWithOriginImage:image watermarkImage:[UIImage imageWithContentsOfFile:_imagePath] config:[LHConfig defaultConfig] result:^(UIImage *markImage) {
          __strong typeof(weakSelf) strongSelf = weakSelf;
         // block中返回水印的图片 主线程
          strongSelf.bottomImgView.image = watermarkImage;
