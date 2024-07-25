@@ -7,7 +7,7 @@
 
 
 
-LHWatermark可以给你的图片添加上盲水印。具体原理访问[博客](http://leonhwa.com/blog/0015035729130008548fcb1848747cab17f90a9fa92593e000)
+LHWatermark可以给你的图片添加上盲水印。
 
 ## 演示
 ![shot01](https://github.com/LeonHwa/screenShot/blob/master/LHWatermark/shot02.png)
